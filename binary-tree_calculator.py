@@ -12,6 +12,7 @@ class BinaryTree:
         self.right = None
         self.expression = exp
 
+
 #* create expression string for showing in UI
 def createExpressionString(t1, t2, char):
     tmp_exp = ''
@@ -43,15 +44,15 @@ def constructTree(postfix):
     _id = 1
     still_in_bracket = True
 
-    # Traverse through every character of input expression
+    #! Traverse through every character of input expression
     for index, char in enumerate(postfix):
 
-        # if operand, simply push into stack
+        #! if operand, simply push into stack
         if char not in operators:
             t = BinaryTree(char, char)
             stack.append(t)
 
-        # Operator
+        #! Operator
         else:
             #* Pop two top nodes
             t1 = stack.pop()
@@ -98,8 +99,8 @@ def constructTree(postfix):
                     # print 'other operator', t1.value, t2.value
                     still_in_bracket = True
 
-
-                if still_in_bracket: # skip reattach because its operator from other bracket
+                #! skip reattach because its operator from other bracket
+                if still_in_bracket:
                     tree.detach(_root) # detach prev root node
                     tree.reattach(_root, _root+1, _id) # add to new root node
                     # print 'detach ', _root, '->', _root+1
@@ -113,6 +114,7 @@ def constructTree(postfix):
                 still_in_bracket = False
                 # print 'done bracket'
 
+        #? debug stuff
         # print 'stack: ',
         # for i in stack:
         #     print i.value,

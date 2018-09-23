@@ -78,15 +78,14 @@ def constructTree(postfix):
                 if t1.value not in operators and t2.value not in operators:
                     tree.insert(_root+1, _id, text=(t2.value), values=(t2.value))
                     tree.insert(_root+1, _id+1, text=(t1.value), values=(t1.value)) # add all the children nodes
-                    # still_in_bracket = True
 
                 elif t2.value not in operators:
                     tree.insert(_root+1, _id, text=(t2.value), values=(t2.value))
-                    # still_in_bracket = True
+                    still_in_bracket = True
                 
                 elif t1.value not in operators:
                     tree.insert(_root+1, _id+1, text=(t1.value), values=(t1.value)) # add all the children nodes
-                    # still_in_bracket = True
+                    still_in_bracket = True
                 
                 else:
                     rootItems = tree.get_children()
@@ -95,7 +94,6 @@ def constructTree(postfix):
                         if item != currentRoot:
                             tree.detach(item)
                             tree.reattach(item, currentRoot, _id+index)
-                        # tree.detach(item)
                     # tree.detach(rootItems[0]) # detach prev root node
                     # tree.reattach(rootItems[0], rootItems[1], _id+1) # add to new root node
                     print 'other operator', t1.value, t2.value

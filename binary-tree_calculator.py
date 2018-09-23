@@ -91,12 +91,14 @@ def constructTree(postfix):
                 
                 else:
                     rootItems = tree.get_children()
-                    currentRoot = max(rootItems)
+                    currentRoot = str(max([int(i) for i in rootItems]))
+                    # print 'currentRoot:', currentRoot, ' rootIltems:',rootItems
                     for index, item in enumerate(rootItems):
                         if item != currentRoot:
                             tree.detach(item)
                             tree.reattach(item, currentRoot, _id+index)
                     # print 'other operator', t1.value, t2.value
+                    # print 'currentRoot:', max(tree.get_children()), ' rootIltems:',tree.get_children()
                     still_in_bracket = True
 
                 #! skip reattach because its operator from other bracket

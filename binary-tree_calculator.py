@@ -73,39 +73,54 @@ def constructTree(postfix):
 
             else: # we need to set new root (new operator is new root)
                 tree.insert("", _id, _root+1, text=(t.value), values=(t.value)) # create new root node
-                
-                if still_in_bracket: # skip reattach because its operator from other bracket
-                    tree.detach(_root) # detach prev root node
-                    tree.reattach(_root, _root+1, _id) # add to new root node
 
                 #! check pop value that should be in current bracket !?
                 if t1.value not in operators and t2.value not in operators:
-                        tree.insert(_root+1, _id, text=(t2.value), values=(t2.value))
-                        tree.insert(_root+1, _id+1, text=(t1.value), values=(t1.value)) # add all the children nodes
-                        still_in_bracket = True
+                    tree.insert(_root+1, _id, text=(t2.value), values=(t2.value))
+                    tree.insert(_root+1, _id+1, text=(t1.value), values=(t1.value)) # add all the children nodes
+                    # still_in_bracket = True
 
-                elif t1.value not in operators:
-                    tree.insert(_root+1, _id, text=(t1.value), values=(t1.value)) # add all the children nodes
-                    still_in_bracket = True
-                
                 elif t2.value not in operators:
-                    tree.insert(_root+1, _id+1, text=(t2.value), values=(t2.value))
-                    still_in_bracket = True
-
+                    tree.insert(_root+1, _id, text=(t2.value), values=(t2.value))
+                    # still_in_bracket = True
+                
+                elif t1.value not in operators:
+                    tree.insert(_root+1, _id+1, text=(t1.value), values=(t1.value)) # add all the children nodes
+                    # still_in_bracket = True
+                
                 else:
                     rootItems = tree.get_children()
-                    tree.detach(rootItems[0]) # detach prev root node
-                    tree.reattach(rootItems[0], rootItems[1], _id+1) # add to new root node
+                    currentRoot = max(rootItems)
+                    for index, item in enumerate(rootItems):
+                        if item != currentRoot:
+                            tree.detach(item)
+                            tree.reattach(item, currentRoot, _id+index)
+                        # tree.detach(item)
+                    # tree.detach(rootItems[0]) # detach prev root node
+                    # tree.reattach(rootItems[0], rootItems[1], _id+1) # add to new root node
                     print 'other operator', t1.value, t2.value
+                    still_in_bracket = True
 
+
+                if still_in_bracket: # skip reattach because its operator from other bracket
+                    tree.detach(_root) # detach prev root node
+                    tree.reattach(_root, _root+1, _id) # add to new root node
+                    print 'detach ', _root, '->', _root+1
+                
                 _root += 1
             
         
+        #* check stack already done with bracket
+        for item in stack:
+            if len(stack) == 1 and item.value in operators:
+                still_in_bracket = False
+                print 'done bracket'
+
         print 'stack: ',
         for i in stack:
             print i.value,
         print ''
-        print tree.get_children()
+        print 'root position', tree.get_children()
         print index, ': ', char, ' ->', _root
         print '\n'
 

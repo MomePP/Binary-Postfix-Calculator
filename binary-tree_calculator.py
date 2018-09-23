@@ -79,17 +79,17 @@ def constructTree(postfix):
                 #! check pop value that should be in current bracket !?
                 if t1.value not in operators and t2.value not in operators:
                     tree.insert(_root+1, _id, text=(t2.value), values=(t2.value))
-                    tree.insert(_root+1, _id+1, text=(t1.value), values=(t1.value)) # add all the children nodes
+                    tree.insert(_root+1, _id+1, text=(t1.value), values=(t1.value))
 
-                elif t2.value not in operators:
+                elif t2.value not in operators: # only create child node (operand) for attach to root node (operator)
                     tree.insert(_root+1, _id, text=(t2.value), values=(t2.value))
-                    still_in_bracket = True
+                    still_in_bracket = True # its not done yet still need to attach to root node
                 
-                elif t1.value not in operators:
-                    tree.insert(_root+1, _id+1, text=(t1.value), values=(t1.value)) # add all the children nodes
-                    still_in_bracket = True
+                elif t1.value not in operators: # only create child node (operand) for attach to root node (operator)
+                    tree.insert(_root+1, _id+1, text=(t1.value), values=(t1.value))
+                    still_in_bracket = True # its not done yet still need to attach to root node
                 
-                else:
+                else: # put all old root nodes into the new one -> new root node that just created
                     rootItems = tree.get_children()
                     currentRoot = str(max([int(i) for i in rootItems]))
                     # print 'currentRoot:', currentRoot, ' rootIltems:',rootItems

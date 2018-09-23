@@ -34,7 +34,6 @@ def constructTree(postfix):
     tree["columns"] = ("one")
     tree.column("#0", width=200)
     tree.column("one", width=300)
-    # # tree.column("two", width=100)
     tree.heading("#0", text="Operator/Operand")
     tree.heading("one", text="Expression")
 
@@ -54,7 +53,6 @@ def constructTree(postfix):
 
         # Operator
         else:
-
             #* Pop two top nodes
             t1 = stack.pop()
             t2 = stack.pop()
@@ -97,16 +95,14 @@ def constructTree(postfix):
                         if item != currentRoot:
                             tree.detach(item)
                             tree.reattach(item, currentRoot, _id+index)
-                    # tree.detach(rootItems[0]) # detach prev root node
-                    # tree.reattach(rootItems[0], rootItems[1], _id+1) # add to new root node
-                    print 'other operator', t1.value, t2.value
+                    # print 'other operator', t1.value, t2.value
                     still_in_bracket = True
 
 
                 if still_in_bracket: # skip reattach because its operator from other bracket
                     tree.detach(_root) # detach prev root node
                     tree.reattach(_root, _root+1, _id) # add to new root node
-                    print 'detach ', _root, '->', _root+1
+                    # print 'detach ', _root, '->', _root+1
                 
                 _root += 1
             
@@ -115,35 +111,20 @@ def constructTree(postfix):
         for item in stack:
             if len(stack) == 1 and item.value in operators:
                 still_in_bracket = False
-                print 'done bracket'
+                # print 'done bracket'
 
-        print 'stack: ',
-        for i in stack:
-            print i.value,
-        print ''
-        print 'root position', tree.get_children()
-        print index, ': ', char, ' ->', _root
-        print '\n'
-
-
-    # Only element will be the root of expression tree
-    t = stack.pop()
+        # print 'stack: ',
+        # for i in stack:
+        #     print i.value,
+        # print ''
+        # print 'root position', tree.get_children()
+        # print index, ': ', char, ' ->', _root
+        # print '\n'
 
     tree.pack()
     root.mainloop()
 
-    # return t
-
-# A utility function to do inorder traversal
-def inorder(t):
-    if t is not None:
-        inorder(t.left)
-        print t.value,
-        inorder(t.right)
-
 
 if __name__ == '__main__':
     input_str = sys.argv[1]
-    # input_str = '251-*32*+'
     constructTree(input_str)
-    # inorder(constructTree(input_str))

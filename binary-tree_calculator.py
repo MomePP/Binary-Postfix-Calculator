@@ -1,16 +1,25 @@
-import sys, ttk
+import sys, ttk, operator
 from Tkinter import *
 
 operators = ['+', '-', '*', '/']
 
+def get_operator_fn(op):
+    return {
+        '+' : operator.add,
+        '-' : operator.sub,
+        '*' : operator.mul,
+        '/' : operator.div,
+        }[op]
+
 #* An expression tree node
 class BinaryTree:
     #* Constructor to create a node
-    def __init__(self, value, exp=None):
+    def __init__(self, value, exp=None, res=None):
         self.value = value
         self.left = None
         self.right = None
         self.expression = exp
+        self.result = res
 
 
 #* create expression string for showing in UI
@@ -25,6 +34,11 @@ def createExpressionString(t1, t2, char):
     else:
         tmp_exp = str('(' + t2.expression + ')' + char + '(' + t1.expression + ')')
     return tmp_exp
+
+
+def calculate_result(t1, t2, char):
+    op1, op2 = t1.result, t2.result
+    return get_operator_fn(char)(op2, op1)
 
 
 def constructTree(postfix):
@@ -49,7 +63,7 @@ def constructTree(postfix):
 
         #! if operand, simply push into stack
         if char not in operators:
-            t = BinaryTree(char, char)
+            t = BinaryTree(char, char, int(char))
             stack.append(t)
 
         #! Operator
@@ -57,7 +71,7 @@ def constructTree(postfix):
             #* Pop two top nodes
             t1 = stack.pop()
             t2 = stack.pop()
-            t = BinaryTree(char, createExpressionString(t1, t2, char))
+            t = BinaryTree(char, createExpressionString(t1, t2, char), calculate_result(t1, t2, char))
 
             #* make them children
             t.right = t1
@@ -68,13 +82,13 @@ def constructTree(postfix):
             
             #* add tree to TreeView
             if isRoot: # because its first node need to create all of it
-                tree.insert("", _id, _root, text=(t.value), values=(t.expression)) # insert operator
+                tree.insert("", _id, _root, text=(t.value), values=(t.expression + '=' + str(t.result))) # insert operator
                 tree.insert(_root, _id, text=(t2.value), values=(t2.value)) # add all the children nodes
                 tree.insert(_root, _id+1, text=(t1.value), values=(t1.value))
                 isRoot = False
 
             else: # we need to set new root (new operator is new root)
-                tree.insert("", _id, _root+1, text=(t.value), values=(t.expression)) # create new root node
+                tree.insert("", _id, _root+1, text=(t.value), values=(t.expression + '=' + str(t.result))) # create new root node
 
                 #! check pop value that should be in current bracket !?
                 if t1.value not in operators and t2.value not in operators:

@@ -12,6 +12,19 @@ class BinaryTree:
         self.right = None
         self.expression = exp
 
+#* create expression string for showing in UI
+def createExpressionString(t1, t2, char):
+    tmp_exp = ''
+    if t1.value not in operators and t2.value not in operators:
+        tmp_exp = str(t2.expression + char + t1.expression)
+    elif t1.value not in operators:
+        tmp_exp = str('(' + t2.expression + ')' + char + t1.expression)
+    elif t2.value not in operators:
+        tmp_exp = str(t2.expression + char + '(' + t1.expression + ')')
+    else:
+        tmp_exp = str('(' + t2.expression + ')' + char + '(' + t1.expression + ')')
+    return tmp_exp
+
 
 def constructTree(postfix):
     root = Tk()
@@ -22,19 +35,9 @@ def constructTree(postfix):
     tree.column("#0", width=200)
     tree.column("one", width=300)
     # # tree.column("two", width=100)
-    tree.heading("#0", text="Expression")
-    tree.heading("one", text="Value")
+    tree.heading("#0", text="Operator/Operand")
+    tree.heading("one", text="Expression")
 
-    # tree.insert("", 0,    text="Line 1", values=("1A"))
-
-    # id2 = tree.insert("", 1, "dir2", text="Dir 2")
-    # tree.insert(id2, "end", "dir 2", text="sub dir 2", values=("2A"))
-
-    # # alternatively:
-    # tree.insert("", 3, "dir3", text="Dir 3")
-    # tree.insert("dir3", 3, text=" sub dir 3", values=("3A"))
-
-    
     stack = []
     isRoot = True
     _root = 1
@@ -46,16 +49,16 @@ def constructTree(postfix):
 
         # if operand, simply push into stack
         if char not in operators:
-            t = BinaryTree(char)
+            t = BinaryTree(char, char)
             stack.append(t)
 
         # Operator
         else:
 
             #* Pop two top nodes
-            t = BinaryTree(char)
             t1 = stack.pop()
             t2 = stack.pop()
+            t = BinaryTree(char, createExpressionString(t1, t2, char))
 
             #* make them children
             t.right = t1
@@ -64,15 +67,15 @@ def constructTree(postfix):
             #* Add this subexpression to stack
             stack.append(t)
             
-            #* add to UI
+            #* add tree to TreeView
             if isRoot: # because its first node need to create all of it
-                tree.insert("", _id, _root, text=(t.value), values=(t.value)) # insert operator
+                tree.insert("", _id, _root, text=(t.value), values=(t.expression)) # insert operator
                 tree.insert(_root, _id, text=(t2.value), values=(t2.value)) # add all the children nodes
                 tree.insert(_root, _id+1, text=(t1.value), values=(t1.value))
                 isRoot = False
 
             else: # we need to set new root (new operator is new root)
-                tree.insert("", _id, _root+1, text=(t.value), values=(t.value)) # create new root node
+                tree.insert("", _id, _root+1, text=(t.value), values=(t.expression)) # create new root node
 
                 #! check pop value that should be in current bracket !?
                 if t1.value not in operators and t2.value not in operators:

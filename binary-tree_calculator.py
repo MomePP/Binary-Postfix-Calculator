@@ -1,5 +1,6 @@
-import sys, ttk, operator
-from Tkinter import *
+import sys, operator
+from tkinter import ttk
+from tkinter import *
 
 operators = ['+', '-', '*', '/']
 
@@ -8,7 +9,7 @@ def get_operator_fn(op):
         '+' : operator.add,
         '-' : operator.sub,
         '*' : operator.mul,
-        '/' : operator.div,
+        '/' : operator.truediv,
         }[op]
 
 #* An expression tree node
